@@ -1,0 +1,4 @@
+package: github.com/zignd/manga-scraper
+import:
+- package: github.com/PuerkitoBio/goquery
+  version: ^1.0.2
