@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"time"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Zignd/bewitched-marmot/types"
 )
@@ -34,14 +36,27 @@ func Search(query string) ([]*types.SearchResultItem, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse the response: %v", err)
 	}
+	if wasThrottled(doc) == true {
+		duration := time.Duration(10) * time.Second
+		time.Sleep(duration)
+		return Search(query)
+	}
 
 	result := []*types.SearchResultItem{}
 
-	if doc.Find("body > section > article > div > div.result_search").Children().Not(".directory_footer").Length() == 0 {
+	docResultItems := doc.
+		Find("body > section > article > div > div.result_search").
+		Children().
+		Not(".directory_footer").
+		FilterFunction(func(index int, selection *goquery.Selection) bool {
+			return selection.Text() != "No Manga Series"
+		})
+
+	if docResultItems.Length() == 0 {
 		return result, nil
 	}
 
-	doc.Find("body > section > article > div > div.result_search").Children().Not(".directory_footer").Each(func(index int, selection *goquery.Selection) {
+	docResultItems.Each(func(index int, selection *goquery.Selection) {
 		item := &types.SearchResultItem{}
 		item.Name = selection.Find("a.manga_info").Text()
 		item.URL, _ = selection.Find("a.manga_info").Attr("href")
@@ -49,4 +64,14 @@ func Search(query string) ([]*types.SearchResultItem, error) {
 	})
 
 	return result, nil
+}
+
+func wasThrottled(doc *goquery.Document) bool {
+	was := false
+
+	doc.Find("body > section > article > div > div.result_search > dl").Children().Each(func(index int, selection *goquery.Selection) {
+		was = (selection.Text() == "Sorry you have just searched, please try 5 seconds later.")
+	})
+
+	return was
 }
