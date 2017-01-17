@@ -15,8 +15,8 @@ const host = "www.mangahere.co"
 
 var baseURL = fmt.Sprintf("http://%s/", host)
 
-// Search queries Manga Here
-func Search(query string) ([]*types.SearchResultItem, error) {
+// Search queries the site
+func Search(query string) ([]*types.CompactManga, error) {
 	searchURL := fmt.Sprintf("%s/search.php?name=%s", baseURL, url.QueryEscape(query))
 
 	req, err := http.NewRequest("GET", searchURL, nil)
@@ -42,7 +42,7 @@ func Search(query string) ([]*types.SearchResultItem, error) {
 		return Search(query)
 	}
 
-	result := []*types.SearchResultItem{}
+	result := []*types.CompactManga{}
 
 	docResultItems := doc.
 		Find("body > section > article > div > div.result_search").
@@ -57,7 +57,7 @@ func Search(query string) ([]*types.SearchResultItem, error) {
 	}
 
 	docResultItems.Each(func(index int, selection *goquery.Selection) {
-		item := &types.SearchResultItem{}
+		item := &types.CompactManga{}
 		item.Name = selection.Find("a.manga_info").Text()
 		item.URL, _ = selection.Find("a.manga_info").Attr("href")
 		result = append(result, item)
