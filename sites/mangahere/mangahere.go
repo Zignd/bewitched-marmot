@@ -13,7 +13,7 @@ import (
 
 const host = "www.mangahere.co"
 
-var baseURL = fmt.Sprintf("http://%s/", host)
+var baseURL = fmt.Sprintf("http://%s", host)
 
 // Search queries the site
 func Search(query string) ([]*types.CompactManga, error) {
@@ -21,20 +21,20 @@ func Search(query string) ([]*types.CompactManga, error) {
 
 	req, err := http.NewRequest("GET", searchURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("could not create request for %s: %v", host, err)
+		return nil, fmt.Errorf("Search(\"%s\") could not create request: %v", searchURL, err)
 	}
 
 	req.Header.Set("referer", baseURL)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to perform query for %s: %v", query, err)
+		return nil, fmt.Errorf("Search(\"%s\") failed to perform query: %v", query, err)
 	}
 	defer res.Body.Close()
 
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse the response: %v", err)
+		return nil, fmt.Errorf("Search(\"%s\") failed to parse HTML document: %v", searchURL, err)
 	}
 	if wasThrottled(doc) == true {
 		duration := time.Duration(10) * time.Second
