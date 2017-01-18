@@ -1,8 +1,12 @@
-hash: c526d20ad064b869722856f569dc50e1c15cf4d6f6e87317e1a23c1c3c1de52b
-updated: 2017-01-15T17:35:31.5750486-02:00
+hash: e83d7d047a04ffc697f2e0508e8a080f971b7c14004945e0d0018baee019eb9d
+updated: 2017-01-18T03:18:41.0218634-02:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
+- name: github.com/davecgh/go-spew
+  version: 346938d642f2ec3594ed81d874461961cd0faa76
+  subpackages:
+  - spew
 - name: github.com/PuerkitoBio/goquery
   version: 3cb3b8656883c2cc3deb9c643d93ea6e5157e425
 - name: golang.org/x/net
