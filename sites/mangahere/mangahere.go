@@ -7,6 +7,8 @@ import (
 
 	"time"
 
+	"strings"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Zignd/bewitched-marmot/types"
 )
@@ -64,6 +66,75 @@ func Search(query string) ([]*types.CompactManga, error) {
 	})
 
 	return result, nil
+}
+
+// GetDetailedManga returns detailed data for a manga based on its URL
+func GetDetailedManga(mangaPageURL string) (*types.DetailedManga, error) {
+	req, err := http.NewRequest("GET", mangaPageURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("GetDetailedManga(%s) could not create a request: %v", mangaPageURL, err)
+	}
+
+	req.Header.Set("referer", baseURL)
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("GetDetailedManga(%s) failed to retrieve the manga page: %v", mangaPageURL, err)
+	}
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromResponse(res)
+	if err != nil {
+		return nil, fmt.Errorf("GetDetailedManga(%s) failed to parse HTML document: %v", mangaPageURL, err)
+	}
+
+	detailedManga := &types.DetailedManga{}
+	detailedManga.URL = mangaPageURL
+
+	// DetailedManga.Name
+	name, exists := doc.
+		Find("head > meta[property=\"og:title\"]").
+		Attr("content")
+	if exists == false {
+		return nil, fmt.Errorf("GetDetailedManga(%s) failed to parse the manga name", mangaPageURL)
+	}
+	detailedManga.Name = name
+
+	// DetailedManga.Description
+	description := doc.Find("#show").Text()
+	if description == "" {
+		return nil, fmt.Errorf("GetDetailedManga(%s) failed to parse the manga description", mangaPageURL)
+	}
+	detailedManga.Description = description
+
+	// DetailedManga.Chapters
+	chapters := []*types.CompactChapter{}
+	var errChapter error
+	doc.
+		Find("#main > article > div > div.manga_detail > div.detail_list > ul").
+		Eq(0).
+		Children().
+		Each(func(index int, chapterSelection *goquery.Selection) {
+			chapter := &types.CompactChapter{}
+
+			wholeText := chapterSelection.Find("span.left").Text()
+			aText := chapterSelection.Find("span.left > a").Text()
+			chapter.Name = strings.Trim(strings.Replace(wholeText, aText, "", 1), "\n ")
+
+			url, exists := chapterSelection.Find("a").Attr("href")
+			if exists == false {
+				errChapter = fmt.Errorf("GetDetailedManga(%s) could not retrieve a URL for a chapter", mangaPageURL)
+			}
+			chapter.URL = url
+
+			chapters = append(chapters, chapter)
+		})
+	if errChapter != nil {
+		return nil, errChapter
+	}
+	detailedManga.Chapters = chapters
+
+	return detailedManga, nil
 }
 
 func wasThrottled(doc *goquery.Document) bool {
