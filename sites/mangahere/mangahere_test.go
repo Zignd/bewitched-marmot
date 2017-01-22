@@ -36,23 +36,38 @@ func Test_Search_ShouldNotReturnData_WhenLookingForNonexistentMangaTitle(t *test
 	}
 }
 
-func Test_GetDetailedManga_ShouldReturnDetailedData_WhenLookingForExistingURL(t *testing.T) {
+func Test_GetManga_ShouldReturnDetailedData_WhenLookingForExistingURL(t *testing.T) {
 	url := "http://www.mangahere.co/manga/noragami/"
 
-	detailedManga, err := GetDetailedManga(url)
+	detailedManga, err := GetManga(url)
 
 	if err != nil {
-		t.Errorf("GetDetailedManga(\"%s\") failed: %v", url, err)
+		t.Errorf("GetManga(\"%s\") failed: %v", url, err)
 		return
 	}
 
 	if detailedManga.Name != "Noragami" {
-		t.Errorf("GetDetailedManga(\"%s\"), expected value for Name was \"Noragami\"", url)
+		t.Errorf("GetManga(\"%s\") returned detailedManga.Name = \"%s\" but the expected was \"Noragami\"", detailedManga.Name, url)
 		return
 	}
 
 	if !(len(detailedManga.Chapters) >= 1 && detailedManga.Chapters[len(detailedManga.Chapters)-1].Name == "People Who Wear Sportswear") {
-		t.Errorf("GetDetailedManga(\"%s\"), expected Name of the first Chapter was \"People Who Wear Sportswear\"", url)
+		t.Errorf("GetManga(\"%s\") returned CompactChapter.Name = \"%s\" for the first chapter but the expected was \"People Who Wear Sportswear\"", detailedManga.Chapters[len(detailedManga.Chapters)-1].Name, url)
+		return
+	}
+}
+
+func Test_GetChapter_ShouldReturnDetailedData_WhenLookingForExistingURL(t *testing.T) {
+	url := "http://www.mangahere.co/manga/noragami/c001/"
+
+	detailedChapter, err := GetChapter(url)
+	if err != nil {
+		t.Errorf("GetChapter(\"%s\") failed: %v", url, err)
+		return
+	}
+
+	if len(detailedChapter.PagesURLs) != 69 {
+		t.Errorf("GetChapter(\"%s\") did not return the expected amount of pages", url)
 		return
 	}
 }
