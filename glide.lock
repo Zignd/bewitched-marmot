@@ -1,5 +1,5 @@
-hash: e83d7d047a04ffc697f2e0508e8a080f971b7c14004945e0d0018baee019eb9d
-updated: 2017-01-18T03:18:41.0218634-02:00
+hash: 3f0b712aeeae1f6d6b3cf054ac3af12f5c4cfb2cc6e80449307c8f611d42a39d
+updated: 2017-01-21T18:33:31.7684712-02:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -7,6 +7,8 @@ imports:
   version: 346938d642f2ec3594ed81d874461961cd0faa76
   subpackages:
   - spew
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
   version: 3cb3b8656883c2cc3deb9c643d93ea6e5157e425
 - name: golang.org/x/net
