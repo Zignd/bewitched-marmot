@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/Zignd/bewitched-marmot/types"
 	"github.com/pkg/errors"
+	"github.com/zignd/bewitched-marmot/types"
 )
 
 const host = "www.mangahere.co"
@@ -76,49 +76,54 @@ func wasThrottled(doc *goquery.Document) bool {
 }
 
 // GetManga retrieves a manga
-func GetManga(mangaPageURL string) (*types.DetailedManga, error) {
-	req, err := http.NewRequest("GET", mangaPageURL, nil)
+func GetManga(mangaURL string) (*types.DetailedManga, error) {
+	req, err := http.NewRequest("GET", mangaURL, nil)
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetDetailedManga(%s) could not create a request", mangaPageURL)
+		return nil, errors.Wrapf(err, "GetDetailedManga(%s) could not create a request", mangaURL)
 	}
 
 	req.Header.Set("referer", baseURL)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetDetailedManga(%s) failed to retrieve the manga page", mangaPageURL)
+		return nil, errors.Wrapf(err, "GetDetailedManga(%s) failed to retrieve the manga page", mangaURL)
 	}
 	defer res.Body.Close()
 
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
-		return nil, errors.Wrapf(err, "GetDetailedManga(%s) failed to parse HTML document", mangaPageURL)
+		return nil, errors.Wrapf(err, "GetDetailedManga(%s) failed to parse HTML document", mangaURL)
 	}
 
 	detailedManga := &types.DetailedManga{}
-	detailedManga.URL = mangaPageURL
+	detailedManga.URL = mangaURL
 
 	// DetailedManga.Name
 	name, exists := doc.
 		Find("head > meta[property=\"og:title\"]").
 		Attr("content")
 	if exists == false {
-		return nil, errors.Errorf("GetDetailedManga(%s) failed to parse the manga name", mangaPageURL)
+		return nil, errors.Errorf("GetDetailedManga(%s) failed to parse the manga name", mangaURL)
 	}
 	detailedManga.Name = name
 
 	// DetailedManga.Description
 	description := doc.Find("#show").Text()
 	if description == "" {
-		return nil, errors.Errorf("GetDetailedManga(%s) failed to parse the manga description", mangaPageURL)
+		return nil, errors.Errorf("GetDetailedManga(%s) failed to parse the manga description", mangaURL)
 	}
 	detailedManga.Description = description
 
 	// DetailedManga.Chapters
 	chapters := []*types.CompactChapter{}
 	var hasErr bool
-	doc.Find("#main > article > div > div.manga_detail > div.detail_list > ul").Eq(0).Children().Each(func(index int, chapterSelection *goquery.Selection) {
+	ulsSelection := doc.Find("#main > article > div > div.manga_detail > div.detail_list > ul").Eq(0).Children()
+	chaptersNumbers := ulsSelection.Length()
+
+	ulsSelection.Each(func(index int, chapterSelection *goquery.Selection) {
 		chapter := &types.CompactChapter{}
+		chapter.Number = chaptersNumbers
+		chaptersNumbers = chaptersNumbers - 1
 
 		wholeText := chapterSelection.Find("span.left").Text()
 		aText := chapterSelection.Find("span.left > a").Text()
@@ -134,7 +139,7 @@ func GetManga(mangaPageURL string) (*types.DetailedManga, error) {
 		chapters = append(chapters, chapter)
 	})
 	if hasErr {
-		return nil, errors.Errorf("GetDetailedManga(%s) could not retrieve a URL for a chapter", mangaPageURL)
+		return nil, errors.Errorf("GetDetailedManga(%s) could not retrieve a URL for a chapter", mangaURL)
 	}
 	detailedManga.Chapters = chapters
 
@@ -221,15 +226,3 @@ func GetChapter(chapterURL string) (*types.DetailedChapter, error) {
 
 	return detailedChapter, nil
 }
-
-/*
-função parsePages(url) ([]string, error)
-	-baixar página da url
-	-encontrar o link da imagem e coloca no array de links de imagens
-	encontra a lista de urls para todas as páginas
-
-	se página tiver link para uma próxima página
-		chama a si mesma passando a url da próxima página
-		armazena o link da imagem no array de links de imagens
-	returna array de links de imagens
-*/
