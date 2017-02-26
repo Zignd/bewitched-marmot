@@ -6,7 +6,7 @@ import (
 
 	"encoding/json"
 
-	"github.com/zignd/bewitched-marmot/sites/mangahere"
+	"github.com/Zignd/bewitched-marmot/sites/mangahere"
 )
 
 func main() {

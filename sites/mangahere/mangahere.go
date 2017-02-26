@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-
+	"strings"
 	"time"
 
-	"strings"
-
 	"github.com/PuerkitoBio/goquery"
+	"github.com/Zignd/bewitched-marmot/types"
 	"github.com/pkg/errors"
-	"github.com/zignd/bewitched-marmot/types"
 )
 
 const host = "www.mangahere.co"
@@ -27,7 +25,7 @@ func Search(query string) ([]*types.CompactManga, error) {
 		return nil, errors.Wrapf(err, "Search(\"%s\") could not create request", searchURL)
 	}
 
-	req.Header.Set("referer", baseURL)
+	req.Header.Set("Referer", baseURL)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -40,7 +38,7 @@ func Search(query string) ([]*types.CompactManga, error) {
 		return nil, errors.Wrapf(err, "Search(\"%s\") failed to parse HTML document", searchURL)
 	}
 	if wasThrottled(doc) == true {
-		duration := time.Duration(10) * time.Second
+		duration := time.Duration(5) * time.Second
 		time.Sleep(duration)
 		return Search(query)
 	}
@@ -66,13 +64,12 @@ func Search(query string) ([]*types.CompactManga, error) {
 }
 
 func wasThrottled(doc *goquery.Document) bool {
-	was := false
-
-	doc.Find("body > section > article > div > div.result_search > dl").Children().Each(func(index int, selection *goquery.Selection) {
-		was = (selection.Text() == "Sorry you have just searched, please try 5 seconds later.")
-	})
-
-	return was
+	for _, node := range doc.Find("body > section > article > div > div.result_search > dl > div").Nodes {
+		if node.FirstChild.Data == "Sorry you have just searched, please try 5 seconds later." {
+			return true
+		}
+	}
+	return false
 }
 
 // GetManga retrieves a manga
@@ -82,7 +79,7 @@ func GetManga(mangaURL string) (*types.DetailedManga, error) {
 		return nil, errors.Wrapf(err, "GetDetailedManga(%s) could not create a request", mangaURL)
 	}
 
-	req.Header.Set("referer", baseURL)
+	req.Header.Set("Referer", baseURL)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {

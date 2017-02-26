@@ -1,4 +1,4 @@
-package: github.com/zignd/bewitched-marmot
+package: github.com/Zignd/bewitched-marmot
 import:
 - package: github.com/PuerkitoBio/goquery
   version: ^1.0.2
