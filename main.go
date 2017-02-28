@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -45,7 +46,7 @@ func main() {
 		res.Write(resBody)
 	})
 	http.HandleFunc("/mangahere/getchapter", func(res http.ResponseWriter, req *http.Request) {
-		chapterURL := req.URL.Query().Get("mangaURL")
+		chapterURL := req.URL.Query().Get("chapterURL")
 		chapter, err := mangahere.GetChapter(chapterURL)
 		if err != nil {
 			res.WriteHeader(http.StatusInternalServerError)
@@ -61,5 +62,6 @@ func main() {
 		res.Header().Set("Content-Type", "application/json")
 		res.Write(resBody)
 	})
-	log.Fatal(http.ListenAndServe("localhost:8081", nil))
+	fmt.Println("listening to http://localhost:8080...")
+	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
