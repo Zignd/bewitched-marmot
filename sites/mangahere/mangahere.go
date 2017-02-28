@@ -56,7 +56,7 @@ func Search(query string) ([]*types.CompactManga, error) {
 
 	docResultItems.Each(func(index int, selection *goquery.Selection) {
 		item := &types.CompactManga{}
-		item.Name = selection.Find("a.manga_info").Text()
+		item.Title = selection.Find("a.manga_info").Text()
 		item.URL, _ = selection.Find("a.manga_info").Attr("href")
 		result = append(result, item)
 	})
@@ -96,14 +96,14 @@ func GetManga(mangaURL string) (*types.DetailedManga, error) {
 	detailedManga := &types.DetailedManga{}
 	detailedManga.URL = mangaURL
 
-	// DetailedManga.Name
-	name, exists := doc.
+	// DetailedManga.Title
+	title, exists := doc.
 		Find("head > meta[property=\"og:title\"]").
 		Attr("content")
 	if exists == false {
 		return nil, errors.Errorf("GetDetailedManga(%s) failed to parse the manga name", mangaURL)
 	}
-	detailedManga.Name = name
+	detailedManga.Title = title
 
 	// DetailedManga.Description
 	description := doc.Find("#show").Text()
@@ -125,7 +125,7 @@ func GetManga(mangaURL string) (*types.DetailedManga, error) {
 
 		wholeText := chapterSelection.Find("span.left").Text()
 		aText := chapterSelection.Find("span.left > a").Text()
-		chapter.Name = strings.Trim(strings.Replace(wholeText, aText, "", 1), "\n ")
+		chapter.Title = strings.Trim(strings.Replace(wholeText, aText, "", 1), "\n ")
 
 		url, exists := chapterSelection.Find("a").Attr("href")
 		if exists == false {

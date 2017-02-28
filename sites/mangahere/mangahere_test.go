@@ -46,13 +46,13 @@ func Test_GetManga_ShouldReturnDetailedData_WhenLookingForExistingURL(t *testing
 		return
 	}
 
-	if detailedManga.Name != "Noragami" {
-		t.Errorf("GetManga(\"%s\") returned detailedManga.Name = \"%s\" but the expected was \"Noragami\"", detailedManga.Name, url)
+	if detailedManga.Title != "Noragami" {
+		t.Errorf("GetManga(\"%s\") returned detailedManga.Title = \"%s\" but the expected was \"Noragami\"", detailedManga.Title, url)
 		return
 	}
 
-	if !(len(detailedManga.Chapters) >= 1 && detailedManga.Chapters[len(detailedManga.Chapters)-1].Name == "People Who Wear Sportswear") {
-		t.Errorf("GetManga(\"%s\") returned CompactChapter.Name = \"%s\" for the first chapter but the expected was \"People Who Wear Sportswear\"", detailedManga.Chapters[len(detailedManga.Chapters)-1].Name, url)
+	if !(len(detailedManga.Chapters) >= 1 && detailedManga.Chapters[len(detailedManga.Chapters)-1].Title == "People Who Wear Sportswear") {
+		t.Errorf("GetManga(\"%s\") returned CompactChapter.Title = \"%s\" for the first chapter but the expected was \"People Who Wear Sportswear\"", detailedManga.Chapters[len(detailedManga.Chapters)-1].Title, url)
 		return
 	}
 }
