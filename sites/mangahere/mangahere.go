@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -194,32 +195,98 @@ func GetChapter(chapterURL string) (*types.DetailedChapter, error) {
 		return nil, errors.Errorf("GetChapter(\"%s\") failed to find the pages links on the HTML document", chapterURL)
 	}
 
-	for _, docOptionValue := range docOptionsValues {
-		req, err := http.NewRequest("GET", docOptionValue, nil)
-		if err != nil {
-			return nil, errors.Wrapf(err, "GetChapter(\"%s\") could not create request", chapterURL)
-		}
-
-		req.Header.Add("referer", baseURL)
-
-		res, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return nil, errors.Wrapf(err, "GetChapter(\"%s\") failed to retrieve the page", chapterURL)
-		}
-		defer res.Body.Close()
-
-		doc, err := goquery.NewDocumentFromResponse(res)
-		if err != nil {
-			return nil, errors.Wrapf(err, "GetChapter(\"%s\") failed to parse HTML document", chapterURL)
-		}
-
-		pageURL, exists := doc.Find("#image").Attr("src")
-		if !exists {
-			return nil, errors.Errorf("GetChapter(\"%s\") failed to find the image URL on the HTML document", chapterURL)
-		}
-
-		detailedChapter.PagesURLs = append(detailedChapter.PagesURLs, pageURL)
+	concurrency := 40
+	numPages := len(docOptionsValues)
+	if numPages < concurrency {
+		concurrency = numPages
 	}
+
+	tokens := make(chan struct{}, concurrency)
+	defer close(tokens)
+	for i := 0; i < concurrency; i++ {
+		tokens <- struct{}{}
+	}
+
+	abort := make(chan struct{})
+
+	var wg sync.WaitGroup
+
+	type page struct {
+		index int
+		url   string
+		err   error
+	}
+	pages := make(chan *page, numPages)
+
+	for index, docOptionValue := range docOptionsValues {
+		wg.Add(1)
+		go func(index int, docOptionValue string) {
+			defer wg.Done()
+			select {
+			case <-abort:
+				return
+			case token := <-tokens:
+				defer func() { tokens <- token }()
+
+				req, err := http.NewRequest("GET", docOptionValue, nil)
+				if err != nil {
+					pages <- &page{
+						err: errors.Wrapf(err, "GetChapter(\"%s\") could not create request", chapterURL),
+					}
+					return
+				}
+
+				req.Header.Add("referer", baseURL)
+
+				res, err := http.DefaultClient.Do(req)
+				if err != nil {
+					pages <- &page{
+						err: errors.Wrapf(err, "GetChapter(\"%s\") failed to retrieve the page", chapterURL),
+					}
+					return
+				}
+				defer res.Body.Close()
+
+				doc, err := goquery.NewDocumentFromResponse(res)
+				if err != nil {
+					pages <- &page{
+						err: errors.Wrapf(err, "GetChapter(\"%s\") failed to parse HTML document", chapterURL),
+					}
+					return
+				}
+
+				pageURL, exists := doc.Find("#image").Attr("src")
+				if !exists {
+					pages <- &page{
+						err: errors.Errorf("GetChapter(\"%s\") failed to find the image URL on the HTML document", chapterURL),
+					}
+					return
+				}
+
+				pages <- &page{
+					index: index,
+					url:   pageURL,
+				}
+			}
+		}(index, docOptionValue)
+	}
+
+	go func() {
+		wg.Wait()
+		close(pages)
+	}()
+
+	remainingPages := make([]string, len(docOptionsValues))
+
+	for page := range pages {
+		if page.err != nil {
+			close(abort)
+			return nil, errors.Wrapf(page.err, "GetChapter(\"%s\") failed to retrieve one of the chapter's page", chapterURL)
+		}
+		remainingPages[page.index] = page.url
+	}
+
+	detailedChapter.PagesURLs = append(detailedChapter.PagesURLs, remainingPages...)
 
 	return detailedChapter, nil
 }
