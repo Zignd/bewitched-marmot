@@ -14,3 +14,20 @@ import:
 - package: golang.org/x/crypto
   subpackages:
   - ssh/terminal
+- package: github.com/rs/cors
+  version: ^1.0.0
+- package: github.com/rs/xhandler
+  version: ^1.0.0
+- package: github.com/justinas/alice
+  version: ^1.0.0
+- package: github.com/zenazn/goji
+  version: ^1.0.0
+- package: github.com/go-martini/martini
+  version: ^1.0.0
+- package: github.com/martini-contrib/render
+- package: github.com/codegangsta/negroni
+  version: ^0.2.0
+- package: github.com/codegangsta/inject
+  version: ^1.0.0-rc1
+- package: github.com/oxtoacart/bpool
+- package: github.com/goji/param

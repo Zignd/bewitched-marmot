@@ -1,26 +1,42 @@
-hash: d1b8f6dbc9a5e34fbb3a768697838df7651697229a1edfaae1ded4cdf145cd3f
-updated: 2017-02-16T22:06:25.645673256-02:00
+hash: 524d8fd331371103fb3bed51465c4dbc93cce3eedf620f26765dc4dc2161c273
+updated: 2017-02-28T22:38:43.274354274-03:00
 imports:
 - name: github.com/andybalholm/cascadia
-  version: a1e764dc2bbe28a036fbbe1c2d1a3748ceb6ce77
+  version: c064a557e52636e4a2398fbf7d7fac2ba923240b
+- name: github.com/codegangsta/inject
+  version: 37d7f8432a3e684eef9b2edece76bdfa6ac85b39
+- name: github.com/codegangsta/negroni
+  version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
 - name: github.com/davecgh/go-spew
   version: ""
   subpackages:
   - spew
+- name: github.com/go-martini/martini
+  version: 49411a5b646861ad29a6ddd5351717a0a9c49b94
+- name: github.com/goji/param
+  version: d7f49fd7d1ed53fd562e737a8b5bbcc7e3d925e2
+- name: github.com/justinas/alice
+  version: 052b8b6c18edb9db317af86806d8e00ebaa94160
+- name: github.com/martini-contrib/render
+  version: ec18f8345a1181146728238980606fb1d6f40e8c
+- name: github.com/oxtoacart/bpool
+  version: 4e1c5567d7c2dd59fa4c7c83d34c2f3528b025d6
 - name: github.com/pkg/errors
   version: ""
 - name: github.com/PuerkitoBio/goquery
   version: ""
-- name: github.com/Zignd/bewitched-marmot
-  version: a1e764dc2bbe28a036fbbe1c2d1a3748ceb6ce77
-  subpackages:
-  - types
+- name: github.com/rs/cors
+  version: a62a804a8a009876ca59105f7899938a1349f4b3
+- name: github.com/rs/xhandler
+  version: d9d9599b6aaf6a058cb7b1f48291ded2cbd13390
+- name: github.com/zenazn/goji
+  version: 64eb34159fe53473206c2b3e70fe396a639452f2
 - name: golang.org/x/crypto
   version: 453249f01cfeb54c3d549ddb75ff152ca243f9d8
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: a1e764dc2bbe28a036fbbe1c2d1a3748ceb6ce77
+  version: c064a557e52636e4a2398fbf7d7fac2ba923240b
   subpackages:
   - html
   - html/atom
