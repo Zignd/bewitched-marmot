@@ -9,13 +9,65 @@
 			"Rev": "c641b87978a16588afa9ab1a02e02c8b8e05b314"
 		},
 		{
+			"ImportPath": "github.com/RangelReale/osin",
+			"Rev": "e09d96c151a3b30cf01c064f06bf50489fb5efcf"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.11.5-12-g10f801e",
+			"Rev": "10f801ebc38b33738c9d17d50860f484a0988ff5"
+		},
+		{
 			"ImportPath": "github.com/andybalholm/cascadia",
 			"Rev": "349dd0209470eabd9514242c688c403c0926d266"
+		},
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Comment": "v1.1.0",
+			"Rev": "346938d642f2ec3594ed81d874461961cd0faa76"
+		},
+		{
+			"ImportPath": "github.com/go-errors/errors",
+			"Rev": "8fa88b06e5974e97fbf9899a7f86a344bfd1f105"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-166-g2704adc",
+			"Rev": "2704adc878c21e1329f46f6e56a1c387d788ff94"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "go1.0-cutoff-166-g2704adc",
+			"Rev": "2704adc878c21e1329f46f6e56a1c387d788ff94"
+		},
+		{
+			"ImportPath": "github.com/oleiade/reflections",
+			"Comment": "0.1.2-12-g0e86b3c",
+			"Rev": "0e86b3c98b2ff33e30c85cfe97d9a63d439fe7eb"
+		},
+		{
+			"ImportPath": "github.com/ory-am/common/pkg",
+			"Comment": "v0.1.0",
+			"Rev": "ba06ec2f738cb3a55608657c2e998a1eef675423"
+		},
+		{
+			"ImportPath": "github.com/ory/osin-storage/storage/postgres",
+			"Rev": "aa4920ab894adc94763e04a23f8bc11d171c5d45"
+		},
+		{
+			"ImportPath": "github.com/pborman/uuid",
+			"Comment": "v1.0-21-g1b00554",
+			"Rev": "1b00554d822231195d1babd97ff4a781231955c9"
 		},
 		{
 			"ImportPath": "github.com/pkg/errors",
 			"Comment": "v0.8.0-4-gff09b13",
 			"Rev": "ff09b135c25aae272398c51a07235b90a75aa4f0"
+		},
+		{
+			"ImportPath": "github.com/pmezard/go-difflib/difflib",
+			"Comment": "v1.0.0",
+			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
 		},
 		{
 			"ImportPath": "github.com/rs/cors",
@@ -28,6 +80,16 @@
 			"Rev": "ed27b6fd65218132ee50cd95f38474a3d8a2cd12"
 		},
 		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.1.4-27-g4d4bfba",
+			"Rev": "4d4bfba8f1d1027c4fdbe371823030df51419987"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/require",
+			"Comment": "v1.1.4-27-g4d4bfba",
+			"Rev": "4d4bfba8f1d1027c4fdbe371823030df51419987"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "6c23252515492caf9b228a9d5cabcdbde29f7f82"
 		},
@@ -38,6 +100,10 @@
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
 			"Rev": "6c23252515492caf9b228a9d5cabcdbde29f7f82"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "8fd966b47dbdd4faa03de0d06e3d733baeb9a1a9"
 		}
 	]
 }
