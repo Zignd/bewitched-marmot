@@ -5,10 +5,10 @@ import (
 	"log"
 
 	"github.com/RangelReale/osin"
-	"github.com/zignd/bewitched-marmot/sites/mangahere"
-	"github.com/zignd/bewitched-marmot/users"
 	_ "github.com/lib/pq" // PostgreSQL driver
 	"github.com/ory/osin-storage/storage/postgres"
+	"github.com/zignd/bewitched-marmot/sites/mangahere"
+	"github.com/zignd/bewitched-marmot/users"
 	"gopkg.in/kataras/iris.v6"
 	"gopkg.in/kataras/iris.v6/adaptors/cors"
 	"gopkg.in/kataras/iris.v6/adaptors/httprouter"
@@ -20,7 +20,7 @@ type jsonError struct {
 
 func main() {
 	// Setting up the database to store OAuth 2 related data
-	db, err := sql.Open("postgres", "postgres://marmot:1234@localhost:5432/marmot")
+	db, err := sql.Open("postgres", "postgres://sculp:totallynotapassword@localhost:5432/sculpdb")
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 		return
