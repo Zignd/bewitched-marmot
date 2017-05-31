@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/Zignd/bewitched-marmot/types"
+	"github.com/zignd/bewitched-marmot/types"
 	"github.com/pkg/errors"
 )
 

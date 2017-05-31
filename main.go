@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/RangelReale/osin"
-	"github.com/Zignd/bewitched-marmot/sites/mangahere"
-	"github.com/Zignd/bewitched-marmot/users"
+	"github.com/zignd/bewitched-marmot/sites/mangahere"
+	"github.com/zignd/bewitched-marmot/users"
 	_ "github.com/lib/pq" // PostgreSQL driver
 	"github.com/ory/osin-storage/storage/postgres"
 	"gopkg.in/kataras/iris.v6"
